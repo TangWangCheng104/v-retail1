@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vuejs 教程</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script src="vue.js"></script>
+
+    <!--//了解-->
+
+
+    <style>
+        .button{
+            height: 44px;
+            line-height: 44px;
+            text-align: center;
+            background: red;
+            color: #fff;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="box">
+
+        <v-a></v-a>
+
+        <br/>
+        <v-b></v-b>
+
+        <br/>
+        <v-c></v-c>
+
+    </div>
+
+<template id="a">
+    <div>
+        A组件 ---- <button @click='toB()'>给B组件传数据</button>
+
+        <br>
+
+        <button @click='toC()'>给C组件传数据</button>
+    </div>
+</template>
+
+<template id="b">
+
+    <div>
+        B组件
+        <hr>
+
+    </div>
+</template>
+
+<template id="c">
+
+    <div>
+        C组件
+        <hr>
+{{msg}}
+    </div>
+</template>
+
+
+</body>
+</html>
+
+<script>
+
+    window.onload=function(){
+
+        //定义一个空的实例对象
+
+        /*
+        非父子组件传值：
+
+            1.实例化一个空的Vue对象event
+
+            2.广播数据  event.$emit('to','数据')
+
+
+            3.接收广播  event.$on('to',function(){
+
+            })
+        */
+
+        var event=new Vue()
+
+
+        var A={
+
+            template:"#a",
+            data(){
+               return{
+                    msg:'AAA组件'
+               }
+            },
+            methods:{
+
+                toB:function(){
+                    // alert('toB');
+
+                    event.$emit('tob',this.run);
+
+                    event.$emit('tobGetBRun','');
+
+                },run(){
+                    alert('run')
+                },
+                
+                toC:function(){
+
+                    event.$emit('toc',this.msg);
+
+                }
+            }
+        }
+        var B={
+
+            template:"#b",
+
+            mounted(){ /*模板加载完成触发*/
+
+                event.$on('tob',function(data){
+                        // console.log(data);
+
+                        data();
+                })
+
+                event.$on('tobGetBRun',function(){
+                        // console.log(data);
+
+                      this.run();
+                }.bind(this))
+
+                
+
+            },methods:{
+
+                run(){
+                    alert('b的run方法');
+                }
+            }
+        }
+        var C={
+
+            template:"#c",
+            data(){
+               return{
+                    msg:'111'
+               }
+            },
+            mounted(){
+                event.$on('toc',function(data){
+                    console.log(this.msg = data);
+
+                })
+            }
+        }
+
+        var app=new Vue({
+
+            el:'#box',
+            components:{
+
+                'v-a':A,
+                'v-b':B,
+                'v-c':C
+            }
+
+        })
+
+
+      
+    };
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
